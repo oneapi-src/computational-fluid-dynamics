@@ -1,0 +1,12 @@
+name: CFD_intel
+channels:
+  - intel
+dependencies:
+  - python=3.9
+  - pip
+  - pandas
+  - pip:
+    - tensorflow==2.10.0
+    - matplotlib
+    - neural-compressor==1.14.2
+    - tqdm
