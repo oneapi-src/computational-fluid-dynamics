@@ -2,7 +2,7 @@
 
 ### License
 
-Order-to-Delivery Time Forecasting is licensed under the terms in [LICENSE](LICENSE). By contributing to the project, you agree to the license and copyright terms therein and release your contribution under these terms.
+Computational Fluid Dynamics is licensed under the terms in [LICENSE](https://github.com/oneapi-src/computational-fluid-dynamics/blob/main/LICENSE). By contributing to the project, you agree to the license and copyright terms therein and release your contribution under these terms.
 
 ### Sign your work
 
