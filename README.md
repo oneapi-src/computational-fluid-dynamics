@@ -1,4 +1,4 @@
-# **Fluid Flow Profiling - Calculating The Velocity Profile Around an Object Using Tensorflow**
+# **Fluid Flow Profiling - Calculating The Velocity Profile Around an Object Using TensorFlow**
 
 Computational Fluid Dynamics (CFD) have applications in a variety of industries including Aerospace, Automobiles and Energy for engineering design of components, Climate Modeling, Electronics (modeling air flow around chips for effective cooling), Healthcare (flow profiling around medical devices such as stents) and many more. CFD solutions provide a way to completely quantify the flow profile spatially as well as with respect to time by calculating the relevant variables such as velocity, pressure, drag, etc. As a result they can enable optimizing the design of components. This is critical because optimized designs can help lower manufacturing and operational costs through reduced material and energy consumption respectively.
 
@@ -12,13 +12,13 @@ Computational Fluid Dynamics (CFD) have applications in a variety of industries 
 
  ## **Purpose**
 
- CFD solutions, in other words, fluid flow profiles are typically calculated by numercially solving the partial differential Navier Stokes (NS) equations governing the environment and boundary conditions. This is usually done through off-the-shelf software such as [Mechsys](https://mechsys.nongnu.org/) or [Ansys](https://www.ansys.com/products/fluids/ansys-fluent). However, this is an iterative, time consuming, and compute and memory intensive job. These factors are a deterrent for rapid design and development of infrastucture where aerodynamics plays a critical role efficient operation, e.g. design of a wind turbine blade, spoiler of a Formula-1 car or even the stacking of server chips in a large data center, where the wind flow will affect cooling patterns or lead to hot spots.
+ CFD solutions, in other words, fluid flow profiles are typically calculated by numerically solving the partial differential Navier Stokes (NS) equations governing the environment and boundary conditions. This is usually done through off-the-shelf software such as [Mechsys](https://mechsys.nongnu.org/) or [Ansys](https://www.ansys.com/products/fluids/ansys-fluent). However, this is an iterative, time-consuming, and compute and memory intensive job. These factors are a deterrent for rapid design and development of infrastructure where aerodynamics plays a critical role in efficient operation, e.g. design of a wind turbine blade, spoiler of a Formula-1 car or even the stacking of server chips in a large data center, where the wind flow will affect cooling patterns or lead to hot spots.
 
  Although being highly compute intensive, CFD codes are largely written and optimized [to run on CPU architecture](https://becominghuman.ai/ai-for-cfd-intro-part-1-d1184936fc47). An AI (Deep Learning) based solution can serve as a replacement to numerical simulations, and can provide quick approximate solutions as highlighted [here](https://damassets.autodesk.net/content/dam/autodesk/research/publications-assets/pdf/convolutional-neural-networks-for.pdf). The Deep Learning (DL) model, through a simple inference job, will allow for faster design tests increasing the throughput, and enable quicker design updates. 
 
 ## **Reference solution**
 
-The deep learning model for calculating a fluid flow profile will be built using Tensorflow. As will be seen subsequently, the input for training will be images with random geometric shapes around which the fluid flow profile will be calculated. This will henceforth be referred to as **boundary**. The output will be a 2D velocity vector (Vx,Vy) at each pixel denoting the velocity value at each location. This can then be converted into a fluid profile image for visual representation
+The deep learning model for calculating a fluid flow profile will be built using TensorFlow. As will be seen subsequently, the input for training will be images with random geometric shapes around which the fluid flow profile will be calculated. This will henceforth be referred to as **boundary**. The output will be a 2D velocity vector (Vx,Vy) at each pixel denoting the velocity value at each location. This can then be converted into a fluid profile image for visual representation
 
 This section provides key implementation details on the proposed reference solution for the target use case. It is organized as follows:
 
@@ -36,7 +36,7 @@ https://github.com/loliverhennigh/Steady-State-Flow-With-Neural-Nets
 
 The dataset can be found [here](https://drive.google.com/file/d/0BzsbU65NgrSuZDBMOW93OWpsMHM/view?resourcekey=0-dEi3hquqjssyK9x-skNL-w).
 
-The dataset is a tfrecords file (a Tensorflow data format) consisting of 3001 images of random geometric shapes and the profile of a fluid flowing around it. The images include "boundary" of the shape which represents the features and a 2D velocity (Vx, Vy) vector which is the label. Fore more context, the velocity vector for training was calculated using Mechsys software. Validating the ground truth is outside the scope of this reference solution and the data is used as is for our experiments.
+The dataset is a tfrecords file (a TensorFlow data format) consisting of 3001 images of random geometric shapes and the profile of a fluid flowing around it. The images include "boundary" of the shape which represents the features and a 2D velocity (Vx, Vy) vector which is the label. For more context, the velocity vector for training was calculated using Mechsys software. Validating the ground truth is outside the scope of this reference solution and the data is used as is for our experiments.
 
 ### **Neural Network (NN) Architecture**
 We will use a U-net based architecture - a convolutional neural network originally developed for [biomedical image segmentation](https://arxiv.org/pdf/1505.04597.pdf). The advantage of using such an architecture is that it can work with fewer training images but still yield precise results. It consists of a number of downsampling layers, a bridging layer followed  by a number of upsampling layers. This approach was also used in the source repo and more details are published [here](https://arxiv.org/pdf/1710.10352.pdf). 
@@ -61,7 +61,7 @@ We also tested the same model on vehicle boundaries, which are completely differ
 
 A schematic of the proposed reference architecture is shown in the following figure. We start off with ingestion of the tfrecords data. As mentioned before, the tfrecords data consist of 3001 tensors which include the shape which represents the features - we will refer to this as the "boundary" - and a 2D velocity (Vx, Vy) vector which we will refer to as the "label". The velocity vector for training is calculated using Mechsys. tfrecords data are already in a structured format and do not need to be processed further. The feature and label, however can be plotted as an image to visually depict the velocity profile and is shown in the pipeline as a representational example.
 
-The data is then used to train a DL model based on a U-Net architecture and saved as a Tensorflow model directory. It will then be converted to a frozen graph (.pb) and the converted model can then be used to run inference on new data. The frozen graph consolidates all model parameters into a single file. This increases its utility, for example, it allows seamless deployment, conversion to other frameworks and is also the preferred choice for quantization using Intel Neural Compressor which we will cover later in the reference solution. 
+The data is then used to train a DL model based on a U-Net architecture and saved as a TensorFlow model directory. It will then be converted to a frozen graph (.pb) and the converted model can then be used to run inference on new data. The frozen graph consolidates all model parameters into a single file. This increases its utility, for example, it allows seamless deployment, conversion to other frameworks and is also the preferred choice for quantization using Intel Neural Compressor which we will cover later in the reference solution. 
 
 The new data used for inference can either be a section from the original dataset which has been set aside for testing or it can also be simple grayscale images of shapes around which we want to calculate the velocity profile, e.g. a vehicle contour. We will test both options here independently. The first one will allow us evaluate model accuracy of unseen test data because the ground truth for the test data is available as part of the data offering. The second option will allow us to investigate how versatile the model on completely different shapes - we will use car profiles here. The ground truths for these images are not available. Hence, model accuracy cannot be quantified but we can verify whether the prediction is reasonable by a visual check.
 
@@ -135,8 +135,8 @@ The training benchmarks can be obtained by executing the script `train_TF_model.
 1. Data Ingestion
 2. Train/test split (random seed is set so that the split is reproducible)
 3. Divide the data in batches
-4. Training a Tensorflow model on the train portion of the data for 5 epochs
-5. Saving Tensorflow model 
+4. Training a TensorFlow model on the train portion of the data for 5 epochs
+5. Saving TensorFlow model 
 
 The script takes the following arguments:
 
@@ -145,7 +145,7 @@ usage: train_TF_model.py [-l LOGFILE] [-m MODELFILE] [-b batch_size] [-e epochs]
 
 relevant arguments:
   -l      LOGFILE,    --logfile     log file to output benchmarking results to
-  -m      MODELFILE   --modelfile   directory name to store the tensorflow model
+  -m      MODELFILE   --modelfile   directory name to store the TensorFlow model
   -b      batch_size  --batch_size  number of batches
   -e      epochs      --epochs      number of epochs
   -lossf  lossfile    --lossfile    .csv file to save the loss values
@@ -157,7 +157,7 @@ python ./src/train_TF_model.py -b 4 -e 5 -m ./models/stock/batch_size_4 -l ./log
 
 ### **Model Coversion to Frozen Graph**
 
-Before we run inference benchmarks, we will need to convert the saved tensorflow model into a frozen graph (.pb) file. A separate script is provided to make that conversion. The script takes the following arguments
+Before we run inference benchmarks, we will need to convert the saved TensorFlow model into a frozen graph (.pb) file. A separate script is provided to make that conversion. The script takes the following arguments
 
 ```shell
 usage: convert_keras_to_frozen_graph.py [-s keras_saved_model_directory] [-o output_saved_directory] 
@@ -183,7 +183,7 @@ The inference benchmarks can be obtained by executing the script `test_TF_model.
 
 1. Data Ingestion
 2. Train/test split (random seed is set so that the split is reproducible)
-3. Loading the pre-trained tensorflow model
+3. Loading the pre-trained TensorFlow model
 4. Running the inference model on the test data using a specified batch size
 5. Creating images to compare prediction to ground truth
 
@@ -204,7 +204,7 @@ To run with batch size of 4 and plot comparitive images, while logging the perfo
 python ./src/test_TF_model.py -b 4 -m ./models/stock/batch_size_4_frozen/saved_frozen_model.pb -l ./logs/stock/batch_size_4_inf.log -lossf ./losses/stock/batch_size_4_loss.csv -p
 ```
 
-The `saved_frozen_model.pb` is the frozen graph model that was generated post tensorflow model conversion.
+The `saved_frozen_model.pb` is the frozen graph model that was generated post TensorFlow model conversion.
 
 ### **Running Benchmarks as a Shell Script in the Stock Environment**
 
@@ -271,7 +271,7 @@ conda activate CFD_intel
 
 Once the Intel environment is created, you can then move ahead to executing the pipeline using the Intel-optimized packages.
 
-The data ingestion, model training, model conversion to frozen graph and model inference exercises are identical to how it was setup for the stock version with the only exception that the pipeline will be executed using Tensorflow v2.10.0 which will leverage oneDNN optimizations by default. Another addition is using INC to quantize the FP32 model to INT8 and run inference using the quantized model.
+The data ingestion, model training, model conversion to frozen graph and model inference exercises are identical to how it was setup for the stock version with the only exception that the pipeline will be executed using TensorFlow v2.10.0 which will leverage oneDNN optimizations by default. Another addition is using INC to quantize the FP32 model to INT8 and run inference using the quantized model.
 
 Following are examples of how the main pipeline components (similar to stock) can be executed in an Intel environment
 
@@ -332,17 +332,17 @@ The output logs, loss files and models will be saved in the relevant folders.
 In this section, we illustrate the benchmarking results comparing the Intel-optimized libraries vs the stock alternative(s).
 
 
-1. Training a Tensorflow model using v2.10.0 (w/ oneDNN optimiations) compared to v2.8.0 (w/o oneDNN optimizations)
+1. Training a TensorFlow model using v2.10.0 (w/ oneDNN optimizations) compared to v2.8.0 (w/o oneDNN optimizations)
 
 ![tensorflow_training](assets/tensorflow_training.png)
 
-2. Inference using a Tensorflow model (FP32 and INT8 quantized) using v2.10.0 (w/ oneDNN optimiations) compared to v2.8.0 (w/o oneDNN optimizations)
+2. Inference using a TensorFlow model (FP32 and INT8 quantized) using v2.10.0 (w/ oneDNN optimiations) compared to v2.8.0 (w/o oneDNN optimizations)
 
 ![tensorflow_inference](assets/tensorflow_inference.png)
 
 ## **Key Takeaways and Discussion**
 
-From the reference solution, we can see that we see a speedup in performance in both training and inference. For training, using Tensorflow v2.10.0 with oneDNN optimizations offers up to **2.31x** speedup over using v2.8.0 without oneDNN optimizations for models trained over 5 epochs. For inference, we get a speedup of up to **1.57x**. If we quantize the FP32 model to an INT8 version using INC, the inference speedup increases to up to **2.67x**.
+From the reference solution, we can see that we see a speedup in performance in both training and inference. For training, using TensorFlow v2.10.0 with oneDNN optimizations offers up to **2.31x** speedup over using v2.8.0 without oneDNN optimizations for models trained over 5 epochs. For inference, we get a speedup of up to **1.57x**. If we quantize the FP32 model to an INT8 version using INC, the inference speedup increases to up to **2.67x**.
 
 **Accuracy:** For fluid flow profiling, there is no denying that the accuracy of the results is a critical aspect for design considerations. Hence for an AI solution which approximates the results, the trade-off between the loss in accuracy and the speedup in model training/inference should be examined carefully before adoption. In this reference solution, there are two sources of accuracy loss:
   1. Using an AI based model instead of a numerical solution which is the main premise of our offering
@@ -376,7 +376,7 @@ python ./src/test_TF_model_cars.py -m ./models/intel/batch_size_4_frozen/saved_f
 
 The ground truth is not provided for this test case and hence the accuracy (MSE) cannot be quantified. However from the the sample output that was shown before the profile intuitively looks reasonable. 
 
-**Business Perspective:** As mentioned before, an AI based model can provide a faster alternative to numerically solving NS equations to calculate fluid flow profiles. This approach in itself can accelerate the component design and development. Furthermore, using Intel optimized technologies, for example, Tensorflow w/ oneDNN optimizations and INT8 quantization using INC for inference can accelerate pipelines even further. This is critical for workloads deployed on modest CPU architectures such as on-prem servers which cannot be customized or even local workstations. These benefits definitely outweigh the negligible accuracy losses seen in an AI based solution.
+**Business Perspective:** As mentioned before, an AI based model can provide a faster alternative to numerically solving NS equations to calculate fluid flow profiles. This approach in itself can accelerate the component design and development. Furthermore, using Intel optimized technologies, for example, TensorFlow w/ oneDNN optimizations and INT8 quantization using INC for inference can accelerate pipelines even further. This is critical for workloads deployed on modest CPU architectures such as on-prem servers which cannot be customized or even local workstations. These benefits definitely outweigh the negligible accuracy losses seen in an AI based solution.
 
 **Note on Performance Gain:**
 
@@ -398,14 +398,14 @@ The original reference kits commands were built using a Linux based system.  In 
 	Total Memory: 32 GB <br>
 	OS: Ubuntu 20.04 <br>
 	Kernel: Linux 5.15.0-1019-azure <br>
-	Software: Tensorflow v2.8.0, Tensorflow  v2.10.0
+	Software: TensorFlow v2.8.0, TensorFlow  v2.10.0
 - **Testing performed by** Intel Corporation
   
 | **Configuration**:                | **Description**
 | :---                              | :---
 | Platform                          | Microsoft Azure: Standard_D8s_v5 (IceLake) <br> Ubuntu 20.04
 | Processing Hardware               | Intel IceLake Xeon Platinum 8370C CPU @ 2.8GHz <br> 32GB
-|  Software                          | NumPy (stock_version: 1.23.5, intel_version: 1.22.3) <br> Matplotlib (v3.6.2 for both intel and stock envs) <br> Tensorflow (stock version: 2.8.0, intel_version:  2.10.0)  <br> Intel Neural Compressor (v1.14.2 only for Intel env)
+|  Software                          | NumPy (stock_version: 1.23.5, intel_version: 1.22.3) <br> Matplotlib (v3.6.2 for both intel and stock envs) <br> TensorFlow (stock version: 2.8.0, intel_version:  2.10.0)  <br> Intel Neural Compressor (v1.14.2 only for Intel env)
 | What you will learn               | Intel® oneAPI performance advantage over the stock packages for building AI powered solution for calculating fluid flow profiles
 
 **Operating System:**
