@@ -1,0 +1,11 @@
+# Downloaded data
+data/train.tfrecords
+data/cars/*png
+
+# Generated outputs
+output_images/
+output/
+src/utils/__pycache__
+losses/
+logs/
+nc_workspace/

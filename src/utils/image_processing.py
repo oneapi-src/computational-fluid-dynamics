@@ -12,7 +12,7 @@ from PIL import Image, ImageOps
 def add_padding(img, pad_l, pad_t, pad_r):
     height, width = img.shape
     #Adding padding to the left side.
-    pad_left = np.zeros((height, pad_l), dtype=np.int)
+    pad_left = np.zeros((height, pad_l), dtype=np.intc)
     img = np.concatenate((pad_left, img), axis=1)
 
     #Adding padding to the top.

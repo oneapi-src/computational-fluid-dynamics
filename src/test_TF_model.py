@@ -1,4 +1,4 @@
-# Copyright (C) 2023 Intel Corporation
+# Copyright (C) 2024 Intel Corporation
 # SPDX-License-Identifier: BSD-3-Clause
 
 '''
@@ -75,7 +75,7 @@ def main(FLAGS):
                 loaded = graph_def.ParseFromString(f.read())                
                 sess.graph.as_default()
                 tf.import_graph_def(graph_def, input_map=None, return_elements=None,
-                                    name="", op_dict=None, producer_op_list=None)
+                                    name="", producer_op_list=None)
                 l_input = graph.get_tensor_by_name('x:0')  # Input Tensor
                 l_output = graph.get_tensor_by_name('Identity:0')  # Output Tensor
                 tf.compat.v1.global_variables_initializer()  # initialize_all_variables
