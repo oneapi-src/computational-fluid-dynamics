@@ -8,3 +8,5 @@ dependencies:
   - intelpython3_core==2024.0.0
   - matplotlib==3.1.2
   - gdown==4.6.0
+  - pillow==10.0.1
+  - werkzeug==3.0.1
