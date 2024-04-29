@@ -175,12 +175,14 @@ During this setup, `fluid_dynamics_intel` conda environment will be created with
 | **YAML file Package**  | **Version** |
 | ---------------------  | ----------- |
 | python                 | 3.9         |
-| intel-aikit-tensorflow | 2024.0.2    |
-| intelpython3_core      | 2024.0.0    |
-| neural-compressor      | 2.3.1       |
-| tensorFlow             | 2.14.0      |
-| matplotlib             | 3.1.2       |
-| gdown                  | 4.6.0       |
+| intel-aikit-tensorflow | 2024.1.0    |
+| intelpython3_core      | 2024.1.0    |
+| neural-compressor      | 2.4.1       |
+| tensorflow             | 2.15.0      |
+| matplotlib             | 3.8.4       |
+| gdown                  | 5.1.0       |
+| werkzeug               | 3.0.2       |
+| pillow                 | 10.3.0      |
 
 ### Download the Datasets
 
