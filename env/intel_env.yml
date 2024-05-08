@@ -4,9 +4,9 @@ channels:
   - conda-forge
 dependencies:
   - python=3.9
-  - intel-aikit-tensorflow==2024.0.2
-  - intelpython3_core==2024.0.0
-  - matplotlib==3.1.2
-  - gdown==4.6.0
-  - pillow==10.2.0
-  - werkzeug==3.0.1
+  - intel-aikit-tensorflow=2024.1.0
+  - intelpython3_core=2024.1.0
+  - matplotlib=3.8.4
+  - gdown=5.1.0
+  - pillow=10.3.0
+  - werkzeug=3.0.2
